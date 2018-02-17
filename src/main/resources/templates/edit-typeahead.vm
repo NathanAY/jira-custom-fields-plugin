@@ -1,0 +1,56 @@
+#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+$webResourceManager.requireResource("jira-custom-fields:jira-custom-fields-resources")
+<input class="typeaheadtext" id="$customField.id" name="$customField.id" type="text" value="$textutils.htmlEncode($!value)"/>
+<input name="tags" id="tags$customField.id" class="textarea long-field"  value="$textutils.htmlEncode($!value)">
+<script>
+    $(function(){
+        $('#myTags').tagit();
+        function getting() {
+            jQuery.ajax({
+                url: AJS.params.baseURL + "/rest/custom-fields/2/data/typeahead/" + "$customField.id",
+                type: "GET",
+                success: function (response) {
+                    $( ('#tags' + '$customField.id') ).tagit({
+                        availableTags: response.replace(/\"/g,"").split(', '),
+                        allowSpaces: true,
+                        ontagClickHref: false,
+                        elementId: 'tags' + '$customField.id'
+                    });
+                }
+            });
+        }
+        getting();
+        //-------------------------------
+        // Tag events
+        //-------------------------------
+        var eventTags = $('#eventTags');
+        var addEvent = function(text) {
+            $('#events_container').append(text + '<br>');
+        };
+        eventTags.tagit({
+            beforeTagAdded: function(evt, ui) {
+                if (!ui.duringInitialization) {
+                    addEvent('beforeTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
+                }
+            },
+            afterTagAdded: function(evt, ui) {
+                if (!ui.duringInitialization) {
+                    addEvent('afterTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
+                }
+            },
+            beforeTagRemoved: function(evt, ui) {
+                addEvent('beforeTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
+            },
+            afterTagRemoved: function(evt, ui) {
+                addEvent('afterTagRemoved: ' + eventTags.tagit('tagLabel', ui.tag));
+            },
+            onTagClicked: function(evt, ui) {
+                addEvent('onTagClicked: ' + eventTags.tagit('tagLabel', ui.tag));
+            },
+            onTagExists: function(evt, ui) {
+                addEvent('onTagExists: ' + eventTags.tagit('tagLabel', ui.existingTag));
+            }
+        });
+    });
+</script>
+#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)

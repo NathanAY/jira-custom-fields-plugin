@@ -1,0 +1,42 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <resource type="i18n" name="i18n" location="custom-fields"/>
+
+    <web-resource key="jira-custom-fields-resources" name="jira-custom-fields Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="typeahead.css" location="/css/typeahead.css"/>
+        <resource type="download" name="typeahead.js" location="/js/typeahead.js"/>
+        <resource type="download" name="images/" location="/images"/>
+        <context>jira.view.issue</context>
+        <context>jira.general</context>
+        <context>jira-custom-fields</context>
+    </web-resource>
+
+    <customfield-type key="typeaheadfield" name="Typeahead" class="com.itransition.jira.plugin.customfields.typeahead.TypeaheadCustomField">
+		<description>An autocomplete field that contains a set of tags.</description>
+        <resource type="velocity" name="view" location="templates/view-typeahead.vm"/>
+		<resource type="velocity" name="edit" location="templates/edit-typeahead.vm"/>
+        <resource type="velocity" name="column-view" location="templates/plugins/fields/view/view-basictext.vm"/>
+        <resource type="velocity" name="xml" location="templates/plugins/fields/xml/xml-basictext.vm"/>
+        <resource type="download" name="customfieldpreview.png" location="images/typeaheadPreview.png"/>
+        <valid-searcher package="com.atlassian.jira.plugin.system.customfieldtypes" key="numberrange" />
+        <valid-searcher package="com.atlassian.jira.plugin.system.customfieldtypes" key="exacttextsearcher" />
+        <valid-searcher package="com.atlassian.jira.plugin.system.customfieldtypes" key="textsearcher" />
+	</customfield-type>
+
+    <component key="CustomFieldsJobRunner" class="com.itransition.jira.plugin.customfields.job.CustomFieldsJobManager" system="true" public="true">
+        <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
+    </component>
+
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+    <rest key="jira-custom-fields-rest-resources" name="jira-custom-fields Endpoint" path="/custom-fields" version="2">
+        <description>Provides the REST resource</description>
+    </rest>
+</atlassian-plugin>

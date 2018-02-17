@@ -1,0 +1,14 @@
+#customControlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters $auiparams)
+$webResourceManager.requireResource("jira-custom-fields:jira-custom-fields-resources")
+<input class="typeaheadtext" id="$customField.id" name="$customField.id" type="text" value="$textutils.htmlEncode($!value)"/>
+<input name="tags" id="tags$customField.id" class="textarea long-field" value="$textutils.htmlEncode($!value)">
+<script>
+    $(function(){
+        $( ('#tags' + '$customField.id') ).tagit({
+            ontagClickHref: true,
+            elementId: 'tags' + '$customField.id',
+            cfName: '$customField.name'
+        });
+    });
+</script>
+#customControlFooter ($action $customField.id $fieldLayoutItem.fieldDescription $displayParameters $auiparams)
